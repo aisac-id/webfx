@@ -4,12 +4,13 @@ Cinematic VFX for any website. A Chrome extension (Manifest V3) that layers
 movie-style visual effects over any page you browse — explosions on click,
 matrix rain, film grading, a Thanos snap, and much more.
 
-**52 effects. Zero dependencies. Zero build step. Only selected effects are loaded.**
+**52 handcrafted effects + 1000 lab presets + an infinite generator.
+Zero dependencies. Zero build step. Only selected effects are loaded.**
 
 Built-in **Auto-Guard** keeps your browser safe: at most 4 effects (and one
 cinematic filter) run at once - enable more and the oldest auto-swaps out.
 Try the **dice button** for a random curated scene, or the **AI Director**
-to auto-rotate 18 hand-picked scenes every 30 seconds.
+to auto-rotate 19 hand-picked scenes every 30 seconds.
 
 ## Install (Load unpacked)
 
@@ -43,6 +44,21 @@ Mix and match freely within the guard budget. A global **Intensity** slider
 (0.2x-2x) scales particle counts and strengths. Settings sync across your
 Chrome profiles.
 
+## Effect Lab (flask tab)
+
+- **Generate Random Effect**: one click creates a brand-new effect from a
+  parametric space of 10 shapes x 12 palettes x 8 physics x 6 emitters
+  (5,760 base combinations, with continuous speed/size/glow/spin variation
+  on top - effectively infinite). Every result gets a procedural name like
+  "Quantum Aurora Vortex".
+- **Preset Library**: 1000 curated, searchable presets (seeds 1-1000),
+  rendered in chunks so the sidebar stays instant.
+- **Favorites**: hit the heart to save up to 30 generated effects. Only the
+  seed is synced - the exact same effect is regenerated deterministically
+  on every tab and profile.
+- Lab effects run through ONE shared parametric engine module
+  (`effects/generated.js`), so a thousand presets still cost one lazy import.
+
 ## Performance safety (Auto-Guard)
 
 - **Hard limits**: max 4 active effects, total render cost <= 7, and only
@@ -57,9 +73,9 @@ Chrome profiles.
 ## Shuffle & AI Director
 
 - **Dice button**: instantly applies a random curated scene (never the same
-  one twice in a row). 18 scenes: Blockbuster, Cyberpunk, Haunted Night,
+  one twice in a row). 19 scenes: Blockbuster, Cyberpunk, Haunted Night,
   Deep Space, Anime Fight, Retrowave, Fairy Tale, Hacker Den, Arcade,
-  Thunderstorm, Daydream, and more.
+  Thunderstorm, Daydream, Wildcard Lab, and more.
 - **AI Director** (sparkle button): auto-rotates scenes every 30 seconds via
   `chrome.alarms`. The toolbar badge shows `AI` while it runs. Any manual
   toggle hands control back to you. Every scene respects the guard budget.
@@ -73,7 +89,8 @@ src/
     registry.js      Effect catalog (id, name, category, cost, module file)
     app.js           Lazy loader + lifecycle manager + budget enforcement
     budget.js        BudgetGuard: max active / cost / exclusive filters
-    scenes.js        18 curated scene presets for shuffle + AI Director
+    scenes.js        19 curated scene presets for shuffle + AI Director
+    generator.js     Seeded parametric preset generator (Effect Lab)
     base-effect.js   Abstract BaseEffect: lifecycle + auto-cleanup
     canvas-layer.js  ONE shared canvas + ONE RAF loop for all effects
     particles.js     Particle / ParticleSystem classes
@@ -84,7 +101,9 @@ src/
   background/service-worker.js  Toolbar/Alt+W toggle, on-demand injection, badge
   background/director.js        AI Director alarm-based scene rotation
   sidebar/           Elegant dark UI: icon-tab rail, search, shuffle, AI toggle
+    lab.js           Effect Lab tab: generator, favorites, 1000-preset browser
   effects/           One ES module per effect, each a BaseEffect subclass
+    generated.js     ONE parametric engine shared by every lab preset
 ```
 
 Design rules:

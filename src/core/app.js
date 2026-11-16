@@ -2,6 +2,7 @@ import Pointer from './pointer.js';
 import CanvasLayer from './canvas-layer.js';
 import BudgetGuard from './budget.js';
 import EFFECTS, { byId } from './registry.js';
+import { isGenId, seedOf, generatePreset } from './generator.js';
 
 /**
  * Content-side application. Owns shared resources (pointer, canvas),
@@ -39,7 +40,9 @@ export default class App {
   /** Diff the new enabled map, enforce the budget, persist drops. */
   _adopt(map) {
     for (const id of Object.keys(map)) {
-      if (map[id] && !this.enabled[id] && byId(id)) this.order.push(id);
+      if (map[id] && !this.enabled[id] && (byId(id) || isGenId(id))) {
+        this.order.push(id);
+      }
     }
     this.enabled = { ...map };
     this.order = this.order.filter((id) => this.enabled[id]);
@@ -53,11 +56,16 @@ export default class App {
   }
 
   async _sync() {
+    const ids = new Set(EFFECTS.map((e) => e.id));
+    for (const id of Object.keys(this.enabled)) {
+      if (this.enabled[id] && isGenId(id)) ids.add(id);
+    }
     const jobs = [];
-    for (const entry of EFFECTS) {
-      const want = !!this.enabled[entry.id];
-      if (want && !this.instances.has(entry.id)) jobs.push(this._load(entry));
-      if (!want && this.instances.has(entry.id)) this._unload(entry.id);
+    for (const id of ids) {
+      const want = !!this.enabled[id];
+      const entry = byId(id) ?? { id, file: 'generated.js' };
+      if (want && !this.instances.has(id)) jobs.push(this._load(entry));
+      if (!want && this.instances.has(id)) this._unload(id);
     }
     await Promise.all(jobs);
   }
@@ -70,7 +78,9 @@ export default class App {
       const mod = await import(url);
       // User may have toggled it off while the module was loading.
       if (!this.enabled[entry.id]) return;
-      const effect = new mod.default(this);
+      const effect = isGenId(entry.id)
+        ? new mod.default(this, generatePreset(seedOf(entry.id)))
+        : new mod.default(this);
       this.instances.set(entry.id, effect);
       await effect.enable();
     } catch (err) {

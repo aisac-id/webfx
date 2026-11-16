@@ -22,6 +22,7 @@ const SCENES = [
   { id: 'dream', name: 'Daydream', effects: ['dreamy', 'bubbles', 'kaleido-trail'] },
   { id: 'autumn', name: 'Autumn Walk', effects: ['autumn-leaves', 'torch'] },
   { id: 'ghost-story', name: 'Ghost Story', effects: ['fog', 'ghosts', 'noir'] },
+  { id: 'wildcard', name: 'Wildcard Lab', effects: ['gen:42', 'gen:777', 'sparkle-trail'] },
 ];
 
 export default SCENES;

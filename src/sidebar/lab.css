@@ -1,0 +1,141 @@
+/* Effect Lab tab: generator hero, favorites, preset browser. */
+
+.lab-hero {
+  margin: 4px 4px 8px;
+  padding: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 13px;
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(139, 92, 246, 0.16), transparent 60%),
+    radial-gradient(120% 100% at 100% 100%, rgba(34, 211, 238, 0.12), transparent 60%),
+    var(--card);
+}
+
+.gen-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), #0891b2);
+  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.4);
+  transition: transform 0.12s, box-shadow 0.15s, filter 0.15s;
+}
+
+.gen-btn:hover {
+  filter: brightness(1.12);
+  box-shadow: 0 6px 22px rgba(34, 211, 238, 0.45);
+}
+
+.gen-btn:active { transform: scale(0.97); }
+
+.gen-btn svg { width: 17px; height: 17px; }
+
+.last-gen {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: rgba(11, 11, 20, 0.55);
+}
+
+.last-gen.on { border-color: rgba(34, 211, 238, 0.5); }
+
+.last-gen .info { flex: 1; min-width: 0; cursor: pointer; }
+
+.last-gen .name { font-weight: 600; font-size: 12px; }
+
+.last-gen .desc { font-size: 10.5px; color: var(--muted); }
+
+.heart-btn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.heart-btn svg { width: 15px; height: 15px; }
+
+.heart-btn:hover { color: #ff7b9c; border-color: #ff7b9c; }
+
+.heart-btn.saved {
+  color: #ff5c8a;
+  border-color: rgba(255, 92, 138, 0.6);
+  box-shadow: 0 0 10px rgba(255, 92, 138, 0.3);
+}
+
+.heart-btn.saved svg { fill: currentColor; }
+
+.lab-subhead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 14px 6px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.lab-subhead .badge {
+  font-size: 9px;
+  letter-spacing: 0;
+  color: var(--accent-2);
+  background: var(--card);
+  border-radius: 7px;
+  padding: 1px 6px;
+}
+
+.remove-btn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-left: 6px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.remove-btn svg { width: 12px; height: 12px; }
+
+.remove-btn:hover { color: #ff7b9c; background: #2a1420; }
+
+.show-more {
+  display: block;
+  width: calc(100% - 8px);
+  margin: 8px 4px;
+  padding: 9px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.show-more:hover { color: var(--accent-2); border-color: var(--accent-2); }

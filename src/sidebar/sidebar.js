@@ -1,6 +1,8 @@
 import EFFECTS, { CATEGORIES } from '../core/registry.js';
 import { pickScene, sceneToEnabled } from '../core/scenes.js';
+import { isGenId } from '../core/generator.js';
 import ICONS from './icons.js';
+import LabView from './lab.js';
 
 /** Sidebar controller: icon-tab rail, effect list, shuffle + AI Director. */
 class SidebarController {
@@ -20,12 +22,14 @@ class SidebarController {
     this.aiBtn = document.getElementById('ai');
     this.toastEl = document.getElementById('toast');
     this._toastTimer = 0;
+    this.lab = new LabView(this);
   }
 
   async init() {
     const data = await chrome.storage.sync.get(['enabled', 'intensity', 'director']);
     this.enabled = data.enabled ?? {};
     this.director = !!data.director;
+    await this.lab.init();
     const intensity = data.intensity ?? 1;
     this.intensityEl.value = String(intensity);
     this.intensityValueEl.textContent = `${Number(intensity).toFixed(1)}x`;
@@ -46,6 +50,8 @@ class SidebarController {
       if (area !== 'sync') return;
       if (changes.enabled) this.enabled = changes.enabled.newValue ?? {};
       if (changes.director) this.director = !!changes.director.newValue;
+      if (changes.favorites) this.lab.favorites = changes.favorites.newValue ?? [];
+      if (changes.lastGen) this.lab.lastSeed = changes.lastGen.newValue ?? null;
       if (changes.intensity) {
         const v = changes.intensity.newValue ?? 1;
         this.intensityEl.value = String(v);
@@ -57,6 +63,7 @@ class SidebarController {
     this._buildRail();
     this.searchEl.addEventListener('input', () => {
       this.query = this.searchEl.value.trim().toLowerCase();
+      this.lab.resetPaging();
       this.render();
     });
     this.intensityEl.addEventListener('input', () => {
@@ -93,7 +100,8 @@ class SidebarController {
   }
 
   _buildRail() {
-    const tabs = [{ id: 'all', name: 'All Effects' }, ...CATEGORIES];
+    const tabs = [{ id: 'all', name: 'All Effects' }, ...CATEGORIES,
+      { id: 'lab', name: 'Effect Lab' }];
     for (const tab of tabs) {
       const btn = document.createElement('button');
       btn.className = `rail-btn${tab.id === this.category ? ' active' : ''}`;
@@ -144,29 +152,35 @@ class SidebarController {
   }
 
   render() {
-    const items = this._visibleEffects();
-    const cat = CATEGORIES.find((c) => c.id === this.category);
-    this.titleEl.textContent = cat ? cat.name : 'All Effects';
-    this.sectionCountEl.textContent = `${items.length}`;
     this.aiBtn.classList.toggle('on', this.director);
-
-    this.listEl.textContent = '';
-    for (const entry of items) this.listEl.appendChild(this._card(entry));
-    if (items.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'empty';
-      empty.textContent = 'No effects match your search.';
-      this.listEl.appendChild(empty);
+    if (this.category === 'lab') {
+      this.titleEl.textContent = 'Effect Lab';
+      this.lab.render();
+    } else {
+      const items = this._visibleEffects();
+      const cat = CATEGORIES.find((c) => c.id === this.category);
+      this.titleEl.textContent = cat ? cat.name : 'All Effects';
+      this.sectionCountEl.textContent = `${items.length}`;
+      this.listEl.textContent = '';
+      for (const entry of items) this.listEl.appendChild(this._card(entry));
+      if (items.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No effects match your search.';
+        this.listEl.appendChild(empty);
+      }
     }
 
-    const active = EFFECTS.filter((e) => this.enabled[e.id]).length;
+    const active = Object.values(this.enabled).filter(Boolean).length;
     this.countEl.textContent = this.director
       ? `AI Director - ${active} active`
       : `${active} effect${active === 1 ? '' : 's'} active`;
     for (const btn of this.railEl.querySelectorAll('.rail-btn[data-tab]')) {
       const tab = btn.dataset.tab;
-      const n = EFFECTS.filter(
-        (e) => (tab === 'all' || e.category === tab) && this.enabled[e.id]).length;
+      const n = tab === 'lab'
+        ? Object.keys(this.enabled).filter((id) => isGenId(id) && this.enabled[id]).length
+        : EFFECTS.filter(
+            (e) => (tab === 'all' || e.category === tab) && this.enabled[e.id]).length;
       btn.classList.toggle('has-active', n > 0);
     }
   }

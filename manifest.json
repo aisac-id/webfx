@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "WebFX - Cinematic VFX for Any Website",
-  "version": "1.2.0",
-  "description": "Turn any website into a movie scene. 52 selectable VFX in an elegant sidebar, with shuffle scenes, an AI Director auto-mode and a performance guard so effects never overload your browser.",
+  "version": "1.3.0",
+  "description": "Turn any website into a movie scene. 52 handcrafted VFX + an Effect Lab with 1000 presets and an infinite effect generator, in an elegant sidebar with shuffle scenes, AI Director and a performance guard.",
   "permissions": ["storage", "scripting", "alarms"],
   "host_permissions": ["<all_urls>"],
   "background": {
