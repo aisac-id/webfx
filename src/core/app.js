@@ -1,18 +1,22 @@
 import Pointer from './pointer.js';
 import CanvasLayer from './canvas-layer.js';
-import EFFECTS from './registry.js';
+import BudgetGuard from './budget.js';
+import EFFECTS, { byId } from './registry.js';
 
 /**
  * Content-side application. Owns shared resources (pointer, canvas),
- * reads the enabled-effect map from storage and lazily imports ONLY
- * the modules for enabled effects. Toggling off fully disposes them.
+ * lazily imports ONLY enabled effect modules, and enforces the
+ * performance budget: when too much is enabled, the oldest effects are
+ * swapped out automatically and the change is persisted.
  */
 export default class App {
   constructor() {
     this.pointer = new Pointer();
     this.canvas = new CanvasLayer();
+    this.guard = new BudgetGuard();
     this.settings = { intensity: 1 };
     this.enabled = {};
+    this.order = [];
     this.instances = new Map();
     this._loading = new Set();
   }
@@ -20,19 +24,32 @@ export default class App {
   async init() {
     this.pointer.install();
     const data = await chrome.storage.sync.get(['enabled', 'intensity']);
-    this.enabled = data.enabled ?? {};
     this.settings.intensity = data.intensity ?? 1;
+    this._adopt(data.enabled ?? {});
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== 'sync') return;
       if (changes.intensity) {
         this.settings.intensity = changes.intensity.newValue ?? 1;
       }
-      if (changes.enabled) {
-        this.enabled = changes.enabled.newValue ?? {};
-        this._sync();
-      }
+      if (changes.enabled) this._adopt(changes.enabled.newValue ?? {});
     });
     await this._sync();
+  }
+
+  /** Diff the new enabled map, enforce the budget, persist drops. */
+  _adopt(map) {
+    for (const id of Object.keys(map)) {
+      if (map[id] && !this.enabled[id] && byId(id)) this.order.push(id);
+    }
+    this.enabled = { ...map };
+    this.order = this.order.filter((id) => this.enabled[id]);
+    const { keep, dropped } = this.guard.enforce(this.order);
+    if (dropped.length > 0) {
+      this.order = keep;
+      for (const id of dropped) delete this.enabled[id];
+      chrome.storage.sync.set({ enabled: this.enabled });
+    }
+    this._sync();
   }
 
   async _sync() {

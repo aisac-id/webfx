@@ -31,6 +31,13 @@ const ICONS = {
   close: svg('<path d="M6 6l12 12"/><path d="M18 6L6 18"/>'),
   search: svg(
     '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/>'),
+  dice: svg(
+    '<rect x="3.5" y="3.5" width="17" height="17" rx="4"/>' +
+    '<path d="M8.5 8.5v.01"/><path d="M15.5 8.5v.01"/><path d="M12 12v.01"/>' +
+    '<path d="M8.5 15.5v.01"/><path d="M15.5 15.5v.01"/>'),
+  ai: svg(
+    '<path d="M12 2.5l2 5.4 5.5 2.1-5.5 2.1-2 5.4-2-5.4L4.5 10l5.5-2.1z"/>' +
+    '<path d="M19 15l.9 2.3 2.1.7-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.7z"/>'),
 };
 
 export default ICONS;

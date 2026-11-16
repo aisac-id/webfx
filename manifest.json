@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "WebFX - Cinematic VFX for Any Website",
-  "version": "1.1.0",
-  "description": "Turn any website into a movie scene. 28 selectable VFX in an elegant right sidebar: explosions, matrix rain, cinematic grading, Thanos snap and more. Only selected effects are loaded.",
-  "permissions": ["storage", "scripting"],
+  "version": "1.2.0",
+  "description": "Turn any website into a movie scene. 52 selectable VFX in an elegant sidebar, with shuffle scenes, an AI Director auto-mode and a performance guard so effects never overload your browser.",
+  "permissions": ["storage", "scripting", "alarms"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "src/background/service-worker.js",

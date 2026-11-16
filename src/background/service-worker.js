@@ -2,8 +2,13 @@
  * Background service worker:
  * - toolbar click / Alt+W toggles the in-page sidebar
  * - injects the content app on demand if the tab predates installation
+ * - runs the AI Director scene rotation
  * - seeds defaults and keeps the toolbar badge in sync
  */
+import Director from './director.js';
+
+const director = new Director();
+
 const toggleSidebar = async (tab) => {
   if (!tab?.id) return;
   try {
@@ -31,24 +36,27 @@ chrome.commands.onCommand.addListener(async (name) => {
 });
 
 const updateBadge = async () => {
-  const { enabled = {} } = await chrome.storage.sync.get('enabled');
+  const { enabled = {}, director: ai = false } =
+    await chrome.storage.sync.get(['enabled', 'director']);
   const count = Object.values(enabled).filter(Boolean).length;
-  await chrome.action.setBadgeText({ text: count ? String(count) : '' });
-  await chrome.action.setBadgeBackgroundColor({ color: '#7c3aed' });
+  await chrome.action.setBadgeText({ text: ai ? 'AI' : count ? String(count) : '' });
+  await chrome.action.setBadgeBackgroundColor({ color: ai ? '#0891b2' : '#7c3aed' });
   await chrome.action.setBadgeTextColor({ color: '#ffffff' });
 };
 
 chrome.runtime.onInstalled.addListener(async () => {
-  const cur = await chrome.storage.sync.get(['enabled', 'intensity']);
+  const cur = await chrome.storage.sync.get(['enabled', 'intensity', 'director']);
   await chrome.storage.sync.set({
     enabled: cur.enabled ?? {},
     intensity: cur.intensity ?? 1,
+    director: cur.director ?? false,
   });
   await updateBadge();
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'sync' && changes.enabled) updateBadge();
+  if (area === 'sync' && (changes.enabled || changes.director)) updateBadge();
 });
 
 updateBadge();
+director.restore();

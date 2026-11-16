@@ -4,7 +4,12 @@ Cinematic VFX for any website. A Chrome extension (Manifest V3) that layers
 movie-style visual effects over any page you browse — explosions on click,
 matrix rain, film grading, a Thanos snap, and much more.
 
-**28 effects. Zero dependencies. Zero build step. Only selected effects are loaded.**
+**52 effects. Zero dependencies. Zero build step. Only selected effects are loaded.**
+
+Built-in **Auto-Guard** keeps your browser safe: at most 4 effects (and one
+cinematic filter) run at once - enable more and the oldest auto-swaps out.
+Try the **dice button** for a random curated scene, or the **AI Director**
+to auto-rotate 18 hand-picked scenes every 30 seconds.
 
 ## Install (Load unpacked)
 
@@ -16,41 +21,48 @@ matrix rain, film grading, a Thanos snap, and much more.
    the sidebar on the right quarter of the screen. Toggle effects from
    the icon-tab category rail. Press **Esc** or the X to close it.
 
-## Effects
+## Effects (52)
 
-| Category | Effect | What it does |
-|---|---|---|
-| Click FX | Explosion Click | Fiery particle blast + shockwave ring on every click |
-| Click FX | Water Ripple | Concentric water rings expand from each click |
-| Click FX | Confetti Burst | Celebration confetti explodes from your clicks |
-| Click FX | Screen Shake | The whole page rumbles on click |
-| Click FX | Thanos Snap | Clicked elements disintegrate into drifting dust |
-| Cursor | Fire Trail | Your cursor drags a trail of rising flames |
-| Cursor | Sparkle Trail | Twinkling pastel stars follow your mouse |
-| Cursor | Neon Ribbon | A glowing hue-cycling ribbon follows the cursor |
-| Cursor | Black Hole | Particles spiral into a singularity at your cursor |
-| Ambient | Matrix Rain | Green digital rain of glyphs |
-| Ambient | Snowfall | Soft snowflakes with gentle sway |
-| Ambient | Rainstorm | Fast rain streaks with splashes |
-| Ambient | Fireflies | Wandering glowing bugs pulsing in the dark |
-| Ambient | Rising Embers | Hot embers float up from the bottom |
-| Ambient | Bubbles | Soap bubbles rise and wobble |
-| Ambient | Starfield Warp | Hyperspace star streaks |
-| Ambient | Lightning Storm | Random flashes with jagged glowing bolts |
-| Ambient | Fireworks | Auto rockets + click to launch your own |
-| Ambient | Aurora | Slow northern-light ribbons |
-| Ambient | Haunted Fog | Thick drifting fog banks |
-| Ambient | Underwater | Blue tint, light caustics and bubbles |
-| Cinematic | Cinematic Grade | Letterbox, film grain, vignette, teal-orange |
-| Cinematic | Cyber Glitch | RGB split, jitter and corruption bursts |
-| Cinematic | VHS Retro | Scanlines, noise, tracking jitter, PLAY badge |
-| Cinematic | CRT Monitor | Phosphor scanlines, flicker, curved glass |
-| Cinematic | Night Vision | Green phosphor military view |
-| Cinematic | Thermal Camera | Heat-map false color, predator style |
-| Cinematic | Blueprint | Inverted blue schematic with drafting grid |
+**Click & Keys (11):** Explosion Click, Water Ripple, Confetti Burst, Screen
+Shake, Thanos Snap, Comic POW!, Combo Counter, Keystroke Sparks, Screen
+Crack, Impact Flash, Bouncy Balls.
 
-Mix and match freely. A global **Intensity** slider (0.2x–2x) scales particle
-counts and strengths. Settings sync across your Chrome profiles.
+**Cursor Trails (9):** Fire Trail, Sparkle Trail, Neon Ribbon, Black Hole,
+Pixel Snake, Orbit Planets, Torchlight, Hearts Trail, Kaleidoscope.
+
+**Ambient & World (20):** Matrix Rain, Snowfall, Rainstorm, Fireflies, Rising
+Embers, Bubbles, Starfield Warp, Lightning Storm, Fireworks, Aurora, Haunted
+Fog, Underwater, Sakura Petals, Autumn Leaves, Meteor Shower, Balloons,
+Paper Planes, Friendly Ghosts, Disco Fever, Synthwave Horizon.
+
+**Cinematic Filters (12, exclusive - one at a time):** Cinematic Grade, Cyber
+Glitch, VHS Retro, CRT Monitor, Night Vision, Thermal Camera, Blueprint,
+Film Noir, Old Film 1920s, Comic Book, Hologram, Dreamy Bloom.
+
+Mix and match freely within the guard budget. A global **Intensity** slider
+(0.2x-2x) scales particle counts and strengths. Settings sync across your
+Chrome profiles.
+
+## Performance safety (Auto-Guard)
+
+- **Hard limits**: max 4 active effects, total render cost <= 7, and only
+  ONE fullscreen cinematic filter. Enabling beyond the limit automatically
+  swaps out the oldest effect - nothing ever piles up.
+- **Lazy loading**: effect modules are `import()`-ed only when enabled.
+- **One canvas, one RAF loop** shared by every canvas effect.
+- **Hidden-tab pause**: the render loop fully stops when the tab is not visible.
+- **Adaptive resolution**: sustained low FPS drops the canvas to 1x DPR.
+- **Clean teardown**: disabling removes every listener, timer and overlay.
+
+## Shuffle & AI Director
+
+- **Dice button**: instantly applies a random curated scene (never the same
+  one twice in a row). 18 scenes: Blockbuster, Cyberpunk, Haunted Night,
+  Deep Space, Anime Fight, Retrowave, Fairy Tale, Hacker Den, Arcade,
+  Thunderstorm, Daydream, and more.
+- **AI Director** (sparkle button): auto-rotates scenes every 30 seconds via
+  `chrome.alarms`. The toolbar badge shows `AI` while it runs. Any manual
+  toggle hands control back to you. Every scene respects the guard budget.
 
 ## Architecture
 
@@ -58,8 +70,10 @@ counts and strengths. Settings sync across your Chrome profiles.
 manifest.json
 src/
   core/
-    registry.js      Effect catalog (id, name, category, module file)
-    app.js           Lazy loader + lifecycle manager (content side)
+    registry.js      Effect catalog (id, name, category, cost, module file)
+    app.js           Lazy loader + lifecycle manager + budget enforcement
+    budget.js        BudgetGuard: max active / cost / exclusive filters
+    scenes.js        18 curated scene presets for shuffle + AI Director
     base-effect.js   Abstract BaseEffect: lifecycle + auto-cleanup
     canvas-layer.js  ONE shared canvas + ONE RAF loop for all effects
     particles.js     Particle / ParticleSystem classes
@@ -68,7 +82,8 @@ src/
     sidebar-host.js  Injects the sidebar iframe (right 25vw, slide-in)
   content/loader.js  Bootstrap, imports app + sidebar host on demand
   background/service-worker.js  Toolbar/Alt+W toggle, on-demand injection, badge
-  sidebar/           Elegant dark UI: icon-tab rail, search, toggles, intensity
+  background/director.js        AI Director alarm-based scene rotation
+  sidebar/           Elegant dark UI: icon-tab rail, search, shuffle, AI toggle
   effects/           One ES module per effect, each a BaseEffect subclass
 ```
 

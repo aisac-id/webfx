@@ -1,0 +1,48 @@
+/* Header action buttons, AI state, toast and guard note. */
+
+.head-actions { display: flex; gap: 6px; }
+
+.icon-btn svg { width: 16px; height: 16px; }
+
+#shuffle:hover { color: var(--accent-2); border-color: var(--accent-2); }
+
+.ai-btn.on {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #0891b2, var(--accent));
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.45);
+}
+
+.ai-btn.on:hover { color: #fff; }
+
+#toast {
+  position: absolute;
+  top: 64px;
+  left: 70px;
+  right: 16px;
+  z-index: 5;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.92), rgba(8, 145, 178, 0.92));
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+
+#toast.show { opacity: 1; transform: translateY(0); }
+
+.guard-note {
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+
+.guard-note b { color: var(--accent-2); font-weight: 600; }
