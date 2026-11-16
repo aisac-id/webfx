@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebFX</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">W</span>
+      <div>
+        <h1>WebFX</h1>
+        <p id="active-count">0 effects active</p>
+      </div>
+    </div>
+    <button id="disable-all" title="Turn everything off">All off</button>
+  </header>
+
+  <div class="controls">
+    <input id="search" type="search" placeholder="Search effects..." autocomplete="off" />
+    <label class="intensity">
+      <span>Intensity</span>
+      <input id="intensity" type="range" min="0.2" max="2" step="0.1" value="1" />
+      <span id="intensity-value">1.0x</span>
+    </label>
+  </div>
+
+  <main id="list"></main>
+
+  <footer>
+    <span>Only selected effects are loaded. Reload open tabs after install.</span>
+  </footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
