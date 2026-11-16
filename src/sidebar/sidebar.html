@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebFX Sidebar</title>
+  <link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+  <div class="shell">
+    <nav class="rail" id="rail" aria-label="Effect categories"></nav>
+
+    <div class="panel">
+      <header class="head">
+        <div class="brand">
+          <span class="logo">W</span>
+          <div class="titles">
+            <h1>WebFX</h1>
+            <p id="active-count">0 effects active</p>
+          </div>
+        </div>
+        <button class="icon-btn" id="close" title="Close sidebar (Esc)"></button>
+      </header>
+
+      <div class="search-wrap">
+        <span class="search-ico" id="search-ico"></span>
+        <input id="search" type="search" placeholder="Search effects..." autocomplete="off" />
+      </div>
+
+      <div class="section-head">
+        <h2 id="section-title">All Effects</h2>
+        <span id="section-count"></span>
+      </div>
+
+      <main class="list" id="list"></main>
+
+      <footer class="foot">
+        <label class="intensity">
+          <span class="label">Intensity</span>
+          <input id="intensity" type="range" min="0.2" max="2" step="0.1" value="1" />
+          <span id="intensity-value">1.0x</span>
+        </label>
+      </footer>
+    </div>
+  </div>
+
+  <script type="module" src="sidebar.js"></script>
+</body>
+</html>

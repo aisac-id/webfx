@@ -12,7 +12,9 @@ matrix rain, film grading, a Thanos snap, and much more.
 2. Open `chrome://extensions` in Chrome (or any Chromium browser).
 3. Enable **Developer mode** (top right).
 4. Click **Load unpacked** and select the repository folder.
-5. Reload any open tabs, click the WebFX toolbar icon, and toggle effects.
+5. On any page, click the WebFX toolbar icon (or press **Alt+W**) to open
+   the sidebar on the right quarter of the screen. Toggle effects from
+   the icon-tab category rail. Press **Esc** or the X to close it.
 
 ## Effects
 
@@ -63,9 +65,10 @@ src/
     particles.js     Particle / ParticleSystem classes
     pointer.js       Shared pointer tracker (single global listener set)
     utils.js         Tiny math helpers
-  content/loader.js  15-line bootstrap, imports the app on demand
-  background/service-worker.js  Defaults + toolbar badge
-  popup/             Dark neon UI: search, toggles, intensity slider
+    sidebar-host.js  Injects the sidebar iframe (right 25vw, slide-in)
+  content/loader.js  Bootstrap, imports app + sidebar host on demand
+  background/service-worker.js  Toolbar/Alt+W toggle, on-demand injection, badge
+  sidebar/           Elegant dark UI: icon-tab rail, search, toggles, intensity
   effects/           One ES module per effect, each a BaseEffect subclass
 ```
 
@@ -97,7 +100,7 @@ export default class MyEffect extends BaseEffect {
 }
 ```
 
-2. Add one entry to `src/core/registry.js`. Done — the popup and lazy loader
+2. Add one entry to `src/core/registry.js`. Done — the sidebar and lazy loader
    pick it up automatically.
 
 ## Notes

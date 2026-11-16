@@ -1,16 +1,22 @@
 {
   "manifest_version": 3,
   "name": "WebFX - Cinematic VFX for Any Website",
-  "version": "1.0.0",
-  "description": "Turn any website into a movie scene. 28 selectable VFX: explosions, matrix rain, cinematic grading, Thanos snap and more. Only selected effects are loaded.",
-  "permissions": ["storage"],
+  "version": "1.1.0",
+  "description": "Turn any website into a movie scene. 28 selectable VFX in an elegant right sidebar: explosions, matrix rain, cinematic grading, Thanos snap and more. Only selected effects are loaded.",
+  "permissions": ["storage", "scripting"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "src/background/service-worker.js",
     "type": "module"
   },
+  "commands": {
+    "toggle-sidebar": {
+      "suggested_key": { "default": "Alt+W" },
+      "description": "Toggle the WebFX sidebar"
+    }
+  },
   "action": {
-    "default_popup": "src/popup/popup.html",
-    "default_title": "WebFX",
+    "default_title": "WebFX - Toggle sidebar (Alt+W)",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
