@@ -1,5 +1,7 @@
 # WebFX
 
+![WebFX - Cinematic VFX for any website](promo/banner.png)
+
 Cinematic VFX for any website. A Chrome extension (Manifest V3) that layers
 movie-style visual effects over any page you browse — explosions on click,
 matrix rain, film grading, a Thanos snap, and much more.
@@ -136,6 +138,25 @@ export default class MyEffect extends BaseEffect {
 
 2. Add one entry to `src/core/registry.js`. Done — the sidebar and lazy loader
    pick it up automatically.
+
+## Brand & Promotion Kit
+
+Ready-to-use marketing assets live in [`promo/`](promo/) - all free to reuse
+under the same MIT license:
+
+| Asset | File | Use |
+| --- | --- | --- |
+| Logo mark | `promo/logo.png` | App icon, avatars (1024x1024) |
+| Logo lockup | `promo/logo-wordmark.png` | Docs, headers, slides |
+| Software box | `promo/software-box.png` | 3D product shot |
+| Poster | `promo/poster.png` | Print / key art (portrait) |
+| Banner | `promo/banner.png` | Wide hero / README header |
+| Social preview | `promo/social-preview.png` | GitHub/Open Graph (1280x640) |
+| Feature showcase | `promo/feature-showcase.png` | Category overview grid |
+| Social square | `promo/social-square.png` | Instagram / X posts (1:1) |
+| Video ad | `promo/webfx-ad-15s.mp4` | 15s 1080p launch ad with sound |
+
+Brand palette: violet `#8b5cf6`, cyan `#22d3ee`, deep navy `#0b0b14`.
 
 ## Notes
 
