@@ -146,7 +146,8 @@ under the same MIT license:
 
 | Asset | File | Use |
 | --- | --- | --- |
-| Logo mark | `promo/logo.png` | App icon, avatars (1024x1024) |
+| Logo mark | <picture><source media="(prefers-color-scheme: dark)" srcset="promo/logo-white.png"><img src="promo/logo.png" width="96"></picture> | App icon, avatars (1024x1024) |
+| Logo mark (dark mode) | `promo/logo-white.png` | Dark backgrounds (1024x1024) |
 | Logo lockup | `promo/logo-wordmark.png` | Docs, headers, slides |
 | Software box | `promo/software-box.png` | 3D product shot |
 | Poster | `promo/poster.png` | Print / key art (portrait) |
